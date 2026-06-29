@@ -1,0 +1,41 @@
+digraph ContentAgent {
+  graph [
+    rankdir=LR,
+    bgcolor="#fbfcfe",
+    pad="0.35",
+    nodesep="0.55",
+    ranksep="0.85",
+    fontname="Arial"
+  ];
+  node [
+    shape=box,
+    style="rounded,filled",
+    fontname="Arial",
+    fontsize=11,
+    margin="0.16,0.10",
+    color="#243447",
+    penwidth=1.2
+  ];
+  edge [
+    color="#5b6775",
+    fontname="Arial",
+    fontsize=9,
+    arrowsize=0.75
+  ];
+
+  schedule [label="Codex schedule\nMon + Wed, 12:00", fillcolor="#dbeafe"];
+  prompt [label="Finance content prompt\n< 3,000 characters", fillcolor="#e0f2fe"];
+  queue [label="Durable JSON outbox\nper-target status", fillcolor="#fef3c7"];
+  worker [label="Silent local worker\nretry-safe", fillcolor="#dcfce7"];
+  telegram [label="Telegram Bot API", fillcolor="#cffafe"];
+  linkedin [label="LinkedIn Posts API", fillcolor="#dbeafe"];
+  archive [label="Sent archive\nIDs + timestamps", fillcolor="#f3f4f6"];
+
+  schedule -> prompt [label="wakes"];
+  prompt -> queue [label="enqueue_post.py"];
+  queue -> worker [label="poll"];
+  worker -> telegram [label="independent delivery"];
+  worker -> linkedin [label="independent delivery"];
+  telegram -> archive [label="message ID"];
+  linkedin -> archive [label="post URN"];
+}

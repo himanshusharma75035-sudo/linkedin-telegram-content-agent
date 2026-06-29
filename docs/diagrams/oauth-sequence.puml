@@ -1,0 +1,30 @@
+@startuml
+skinparam backgroundColor #FBFCFE
+skinparam sequence {
+  ArrowColor #334155
+  ActorBorderColor #334155
+  LifeLineBorderColor #64748B
+  ParticipantBorderColor #334155
+  ParticipantBackgroundColor #E0F2FE
+}
+
+actor User
+participant "linkedin_oauth.py" as App
+participant "Local callback\nlocalhost:8080" as Callback
+participant "LinkedIn OAuth" as OAuth
+participant "LinkedIn UserInfo" as Profile
+
+User -> App: Run authorization command
+App -> Callback: Start one-request HTTP server
+App -> OAuth: Open authorization URL\nopenid profile email w_member_social
+OAuth -> User: Show consent screen
+User -> OAuth: Approve
+OAuth -> Callback: Redirect with code + state
+Callback -> App: Return authorization code
+App -> App: Validate state
+App -> OAuth: Exchange code for access token
+OAuth --> App: access_token + expires_in
+App -> Profile: GET /v2/userinfo
+Profile --> App: sub, name, email
+App -> App: Save linkedin_token.json locally
+@enduml

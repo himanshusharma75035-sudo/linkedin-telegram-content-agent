@@ -1,0 +1,37 @@
+digraph QueueState {
+  graph [
+    rankdir=LR,
+    bgcolor="#ffffff",
+    pad="0.25",
+    fontname="Arial"
+  ];
+  node [
+    shape=ellipse,
+    style=filled,
+    fontname="Arial",
+    fontsize=10,
+    color="#334155",
+    penwidth=1.2
+  ];
+  edge [
+    color="#475569",
+    fontname="Arial",
+    fontsize=9,
+    arrowsize=0.7
+  ];
+
+  queued [label="Queued", fillcolor="#fef3c7"];
+  partial [label="Partially delivered", fillcolor="#ffedd5"];
+  retry [label="Pending retry", fillcolor="#fee2e2"];
+  complete [label="Delivered to both", fillcolor="#dcfce7", shape=doublecircle];
+  archived [label="Archived", fillcolor="#e2e8f0", shape=box];
+
+  queued -> complete [label="both APIs succeed"];
+  queued -> partial [label="one succeeds"];
+  queued -> retry [label="both fail"];
+  partial -> complete [label="remaining API succeeds"];
+  partial -> retry [label="remaining API fails"];
+  retry -> partial [label="one recovers"];
+  retry -> complete [label="both recover"];
+  complete -> archived [label="move JSON"];
+}
