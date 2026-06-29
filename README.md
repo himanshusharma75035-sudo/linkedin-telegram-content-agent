@@ -271,6 +271,8 @@ Telegram or LinkedIn directly; the local worker owns delivery and retries.
 - The worker publishes only queue files created locally.
 
 See [SECURITY.md](SECURITY.md) before deploying this on a shared machine.
+Maintainers should also follow the
+[live-automation synchronization contract](docs/MAINTENANCE.md).
 
 ## Diagram sources
 
