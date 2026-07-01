@@ -30,3 +30,11 @@ call the Telegram or LinkedIn APIs directly from the automation run.
 
 - Monday at 12:00 PM in the user's timezone
 - Wednesday at 12:00 PM in the user's timezone
+
+For India Standard Time, use an explicit timezone-qualified schedule rather
+than converting to UTC:
+
+```text
+DTSTART;TZID=Asia/Calcutta:20260706T120000
+RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=MO,WE;BYHOUR=12;BYMINUTE=0;BYSECOND=0
+```
