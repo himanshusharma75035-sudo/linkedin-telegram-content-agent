@@ -1,20 +1,23 @@
 import argparse
 import json
+import os
 import sys
 import time
 import urllib.error
 import urllib.request
-from datetime import datetime, timezone
 
-from common import ROOT_DIR, read_json
+from common import ROOT_DIR, load_env_file, read_json
 
 
+ENV_FILE = ROOT_DIR / "linkedin.env"
 TOKEN_FILE = ROOT_DIR / "linkedin_token.json"
 POSTS_URL = "https://api.linkedin.com/rest/posts"
+DEFAULT_LINKEDIN_VERSION = "202604"
 
 
 def linkedin_version() -> str:
-    return datetime.now(timezone.utc).strftime("%Y%m")
+    load_env_file(ENV_FILE)
+    return os.environ.get("LINKEDIN_API_VERSION", DEFAULT_LINKEDIN_VERSION).strip()
 
 
 def publish_text_post(text: str) -> str:

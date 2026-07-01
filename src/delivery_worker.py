@@ -55,6 +55,7 @@ def process_message(path: Path) -> bool:
     if complete:
         SENT_DIR.mkdir(parents=True, exist_ok=True)
         shutil.move(str(path), SENT_DIR / path.name)
+        (FAILED_DIR / path.name).unlink(missing_ok=True)
         return True
 
     FAILED_DIR.mkdir(parents=True, exist_ok=True)

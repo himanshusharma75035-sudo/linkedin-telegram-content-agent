@@ -183,6 +183,7 @@ Open `linkedin.env` and add the values shown on the Auth tab:
 LINKEDIN_CLIENT_ID=replace_with_client_id
 LINKEDIN_CLIENT_SECRET=replace_with_client_secret
 LINKEDIN_REDIRECT_URI=http://localhost:8080/linkedin/callback
+LINKEDIN_API_VERSION=202604
 ```
 
 > [!CAUTION]
@@ -203,6 +204,10 @@ callback stores the token in `linkedin_token.json`, which is excluded by
 
 LinkedIn member tokens commonly expire and may require running the OAuth
 command again. The worker records a clear error instead of discarding the post.
+The API version is pinned rather than derived from the current date because a
+new calendar month can begin before LinkedIn activates that month's API
+version. Update `LINKEDIN_API_VERSION` only to a version listed as active in
+LinkedIn's official versioned API documentation.
 
 ## 4. Queue and deliver a post
 

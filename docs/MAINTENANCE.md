@@ -12,6 +12,7 @@ Changes that require a repository commit include:
 - Telegram or LinkedIn delivery behavior
 - queue schema and retry behavior
 - OAuth scopes, endpoints, or token handling
+- LinkedIn API version headers
 - startup and background-worker behavior
 - setup instructions or environment variables
 
