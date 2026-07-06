@@ -31,10 +31,10 @@ call the Telegram or LinkedIn APIs directly from the automation run.
 - Monday at 12:00 PM in the user's timezone
 - Wednesday at 12:00 PM in the user's timezone
 
-For India Standard Time, use an explicit timezone-qualified schedule rather
-than converting to UTC:
+In the Codex app, use the weekly rule below and let Codex interpret the wall
+clock time in the user's configured locale. Do not prepend a timezone-qualified
+`DTSTART`; that form may be saved without producing a scheduled run.
 
 ```text
-DTSTART;TZID=Asia/Calcutta:20260706T120000
-RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=MO,WE;BYHOUR=12;BYMINUTE=0;BYSECOND=0
+FREQ=WEEKLY;BYDAY=MO,WE;BYHOUR=12;BYMINUTE=0;BYSECOND=0
 ```
