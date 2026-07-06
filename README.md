@@ -53,6 +53,7 @@ fails, the worker retries only LinkedIn. That avoids duplicate posts.
 - Standard-library Python; no runtime packages to install
 - Secret-safe examples and git exclusions
 - Copy-ready Codex prompt for finance and fintech content
+- AI-first topic policy: approximately 70% practical AI-in-finance angles
 
 ## Repository map
 

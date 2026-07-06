@@ -9,6 +9,7 @@ Changes that require a repository commit include:
 
 - schedule or timezone changes
 - content prompt or topic-policy changes
+- AI/non-AI topic balance and AI governance requirements
 - Telegram or LinkedIn delivery behavior
 - queue schema and retry behavior
 - OAuth scopes, endpoints, or token handling

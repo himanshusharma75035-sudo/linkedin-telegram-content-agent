@@ -23,6 +23,13 @@ automation memory and today's local sent/outbox/failed artifacts.
   MIS, cash flow, AP/AR, month-end close, budgeting, forecasting, variance
   analysis, AI in finance, agentic automation, leadership, operations, audit,
   controls, or investor reporting.
+- Give roughly 70% of newly generated recovery posts a substantive AI or
+  agentic-automation perspective within a real finance workflow, including
+  FP&A, forecasting, variance investigation, close, reconciliation, tax
+  exception review, cash, AP/AR, controls, MIS, or investor reporting.
+- Avoid generic AI claims. Include the workflow, data/control boundary, human
+  review, audit trail, failure risk, and measurable finance outcome.
+- Keep some posts focused on non-AI finance topics for balance.
 - Read prior automation memory and never repeat a topic or angle.
 - Use a strong hook, real scenario or insight, practical takeaway, and exactly
   6 to 8 relevant hashtags.

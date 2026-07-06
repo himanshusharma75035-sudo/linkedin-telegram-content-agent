@@ -16,6 +16,14 @@ call the Telegram or LinkedIn APIs directly from the automation run.
   TDS, MIS, cash flow, AP/AR, close, budgeting, forecasting, variance analysis,
   AI in finance, automation, leadership, fintech operations, audit, controls,
   or investor reporting.
+- Give roughly 70% of posts a substantive AI or agentic-automation perspective
+  within a real finance workflow. Examples include AI in FP&A, forecasting,
+  variance investigation, close, reconciliation, GST/TDS exception review,
+  cash management, AP/AR, controls, MIS, and investor reporting.
+- Do not add generic AI hype. Explain the workflow, data and control boundary,
+  required human review, audit trail, failure risk, and measurable finance
+  outcome.
+- Keep roughly 30% of posts focused on non-AI finance topics for balance.
 - Never repeat a topic or angle used by an earlier run.
 - Structure: strong hook, real scenario or insight, practical takeaway,
   hashtags.
