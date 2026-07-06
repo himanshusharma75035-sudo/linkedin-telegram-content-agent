@@ -25,6 +25,7 @@ Changes that require a repository commit include:
 | Telegram delivery | `src/telegram_send.py` |
 | LinkedIn delivery | `src/linkedin_post.py` |
 | Background retries | `src/delivery_worker.py` |
+| Delivery watchdog | `src/post_watchdog.py` |
 | LinkedIn authorization | `src/linkedin_oauth.py` |
 | Windows startup | `scripts/` |
 | User setup | `README.md` |
@@ -37,3 +38,5 @@ Changes that require a repository commit include:
 4. Scan staged files for credentials and tokens.
 5. Commit and push to `main`.
 6. Confirm GitHub Actions passes.
+7. Confirm the 12:20 recovery automation remains duplicate-safe.
+8. Confirm the 12:35 watchdog recognizes a sent artifact without alerting.

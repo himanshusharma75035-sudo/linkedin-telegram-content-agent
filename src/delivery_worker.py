@@ -6,6 +6,7 @@ from pathlib import Path
 
 from common import ROOT_DIR, atomic_write_json, read_json
 from linkedin_post import publish_text_post
+from post_watchdog import check as check_post_watchdog
 from telegram_send import send_message
 
 
@@ -72,6 +73,7 @@ def process_once() -> tuple[int, int]:
             sent += 1
         else:
             pending += 1
+    check_post_watchdog()
     return sent, pending
 
 

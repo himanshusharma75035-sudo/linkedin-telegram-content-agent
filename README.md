@@ -46,6 +46,7 @@ fails, the worker retries only LinkedIn. That avoids duplicate posts.
 - Publishes text posts to a personal LinkedIn profile through the official API
 - Sends the same post to a Telegram bot chat
 - Durable queue with per-platform retry state
+- Duplicate-safe 12:20 recovery schedule and 12:35 delivery watchdog
 - LinkedIn OAuth 2.0 authorization through a localhost callback
 - Silent Windows startup using `pythonw.exe` and `wscript.exe`
 - Standard-library Python; no runtime packages to install
@@ -266,6 +267,13 @@ python src/enqueue_post.py
 
 Pass the generated post through standard input. The automation should not call
 Telegram or LinkedIn directly; the local worker owns delivery and retries.
+
+For production use, add a second Codex automation at 12:20 PM on Monday and
+Wednesday. It should first check today's sent/outbox artifacts and generate a
+post only when the primary run produced nothing. The background worker performs
+a 12:35 PM local watchdog check and sends one Telegram alert if no LinkedIn
+delivery is confirmed. A copy-ready recovery prompt is available in
+[`prompts/recovery-check.md`](prompts/recovery-check.md).
 
 ## Security model
 

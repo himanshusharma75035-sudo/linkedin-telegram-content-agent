@@ -4,6 +4,7 @@ linkedin_token.json
 outbox/
 sent/
 failed/
+watchdog_state.json
 *.log
 __pycache__/
 *.py[cod]
