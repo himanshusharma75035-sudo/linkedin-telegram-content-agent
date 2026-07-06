@@ -1,7 +1,7 @@
 import sys
 import tempfile
 import unittest
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from unittest.mock import patch
 
@@ -46,6 +46,31 @@ class WatchdogTests(unittest.TestCase):
                 monday = datetime(2026, 7, 6, 12, 35)
                 self.assertEqual(post_watchdog.check(monday), "confirmed")
                 send_mock.assert_not_called()
+
+    def test_token_expiry_warning_is_sent_once(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            token_file = root / "linkedin_token.json"
+            now = datetime(2026, 7, 6, tzinfo=timezone.utc)
+            expires_at = int((now + timedelta(days=6)).timestamp())
+            token_file.write_text(
+                f'{{"expires_at": {expires_at}}}\n',
+                encoding="utf-8",
+            )
+            with (
+                patch.object(post_watchdog, "TOKEN_FILE", token_file),
+                patch.object(post_watchdog, "STATE_FILE", root / "state.json"),
+                patch.object(post_watchdog, "send_message") as send_mock,
+            ):
+                self.assertEqual(
+                    post_watchdog.check_token_expiry(now),
+                    "seven_day_warning",
+                )
+                self.assertEqual(
+                    post_watchdog.check_token_expiry(now),
+                    "already_alerted",
+                )
+                send_mock.assert_called_once()
 
 
 if __name__ == "__main__":

@@ -47,6 +47,7 @@ fails, the worker retries only LinkedIn. That avoids duplicate posts.
 - Sends the same post to a Telegram bot chat
 - Durable queue with per-platform retry state
 - Duplicate-safe 12:20 recovery schedule and 12:35 delivery watchdog
+- Telegram warning seven days before LinkedIn token expiry
 - LinkedIn OAuth 2.0 authorization through a localhost callback
 - Silent Windows startup using `pythonw.exe` and `wscript.exe`
 - Standard-library Python; no runtime packages to install

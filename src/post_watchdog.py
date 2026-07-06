@@ -1,24 +1,67 @@
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 
-from common import ROOT_DIR, atomic_write_json
+from common import ROOT_DIR, atomic_write_json, read_json
 from telegram_send import send_message
 
 
 SENT_DIR = ROOT_DIR / "sent"
 OUTBOX_DIR = ROOT_DIR / "outbox"
 STATE_FILE = ROOT_DIR / "watchdog_state.json"
+TOKEN_FILE = ROOT_DIR / "linkedin_token.json"
 POST_WEEKDAYS = {0, 2}
 CHECK_AFTER = (12, 35)
 
 
 def load_state() -> dict:
     if not STATE_FILE.exists():
-        return {"alerted": {}, "confirmed": {}}
+        return {"alerted": {}, "confirmed": {}, "token_alerts": {}}
     try:
-        return json.loads(STATE_FILE.read_text(encoding="utf-8"))
+        state = json.loads(STATE_FILE.read_text(encoding="utf-8"))
+        state.setdefault("token_alerts", {})
+        return state
     except json.JSONDecodeError:
-        return {"alerted": {}, "confirmed": {}}
+        return {"alerted": {}, "confirmed": {}, "token_alerts": {}}
+
+
+def check_token_expiry(now: datetime | None = None) -> str:
+    if not TOKEN_FILE.exists():
+        return "missing_token"
+
+    now = now or datetime.now(timezone.utc)
+    if now.tzinfo is None:
+        now = now.replace(tzinfo=timezone.utc)
+    token = read_json(TOKEN_FILE)
+    expires_at = int(token.get("expires_at", 0))
+    if not expires_at:
+        return "unknown_expiry"
+
+    expiry = datetime.fromtimestamp(expires_at, tz=timezone.utc)
+    days_left = (expiry - now.astimezone(timezone.utc)).total_seconds() / 86400
+    if days_left > 7:
+        return "valid"
+
+    level = "expired" if days_left <= 0 else "seven_day_warning"
+    state = load_state()
+    alert_key = f"{expires_at}:{level}"
+    if alert_key in state["token_alerts"]:
+        return "already_alerted"
+
+    if level == "expired":
+        message = (
+            "LinkedIn automation alert: the access token expired. "
+            "Run `python src/linkedin_oauth.py` before the next scheduled post."
+        )
+    else:
+        message = (
+            f"LinkedIn automation warning: the access token expires on "
+            f"{expiry.astimezone().strftime('%d %b %Y, %I:%M %p')}. "
+            "Run `python src/linkedin_oauth.py` this week."
+        )
+    send_message(message)
+    state["token_alerts"][alert_key] = now.isoformat()
+    atomic_write_json(STATE_FILE, state)
+    return level
 
 
 def check(now: datetime | None = None) -> str:

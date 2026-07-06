@@ -40,3 +40,4 @@ Changes that require a repository commit include:
 6. Confirm GitHub Actions passes.
 7. Confirm the 12:20 recovery automation remains duplicate-safe.
 8. Confirm the 12:35 watchdog recognizes a sent artifact without alerting.
+9. Confirm token-expiry warnings are sent once per warning level.
