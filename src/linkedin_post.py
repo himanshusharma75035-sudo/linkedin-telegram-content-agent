@@ -13,11 +13,31 @@ ENV_FILE = ROOT_DIR / "linkedin.env"
 TOKEN_FILE = ROOT_DIR / "linkedin_token.json"
 POSTS_URL = "https://api.linkedin.com/rest/posts"
 DEFAULT_LINKEDIN_VERSION = "202604"
+DEFAULT_ORGANIZATION_ID = "109667739"
 
 
 def linkedin_version() -> str:
     load_env_file(ENV_FILE)
     return os.environ.get("LINKEDIN_API_VERSION", DEFAULT_LINKEDIN_VERSION).strip()
+
+
+def linkedin_author_urn(token: dict) -> str:
+    load_env_file(ENV_FILE)
+    author_urn = os.environ.get("LINKEDIN_AUTHOR_URN", "").strip()
+    if author_urn:
+        return author_urn
+
+    organization_id = os.environ.get("LINKEDIN_ORGANIZATION_ID", DEFAULT_ORGANIZATION_ID).strip()
+    if organization_id:
+        return f"urn:li:organization:{organization_id}"
+
+    return token["person_urn"]
+
+
+def linkedin_post_url(post_id: str) -> str:
+    if not post_id:
+        return ""
+    return f"https://www.linkedin.com/feed/update/{post_id}/"
 
 
 def publish_text_post(text: str) -> str:
@@ -30,7 +50,7 @@ def publish_text_post(text: str) -> str:
 
     body = json.dumps(
         {
-            "author": token["person_urn"],
+            "author": linkedin_author_urn(token),
             "commentary": text,
             "visibility": "PUBLIC",
             "distribution": {

@@ -15,7 +15,7 @@ TOKEN_FILE = ROOT_DIR / "linkedin_token.json"
 AUTH_URL = "https://www.linkedin.com/oauth/v2/authorization"
 TOKEN_URL = "https://www.linkedin.com/oauth/v2/accessToken"
 USERINFO_URL = "https://api.linkedin.com/v2/userinfo"
-SCOPES = "openid profile email w_member_social"
+SCOPES = "openid profile email w_member_social w_organization_social"
 
 
 def post_form(url: str, values: dict) -> dict:

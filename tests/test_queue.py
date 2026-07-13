@@ -70,7 +70,7 @@ class QueueTests(unittest.TestCase):
             archived = json.loads((sent / path.name).read_text(encoding="utf-8"))
             self.assertEqual(
                 archived["targets"]["linkedin"]["reference"],
-                "urn:li:share:123",
+                "https://www.linkedin.com/feed/update/urn:li:share:123/",
             )
 
 

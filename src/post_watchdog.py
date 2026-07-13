@@ -9,7 +9,6 @@ SENT_DIR = ROOT_DIR / "sent"
 OUTBOX_DIR = ROOT_DIR / "outbox"
 STATE_FILE = ROOT_DIR / "watchdog_state.json"
 TOKEN_FILE = ROOT_DIR / "linkedin_token.json"
-POST_WEEKDAYS = {0, 2}
 CHECK_AFTER = (12, 35)
 
 
@@ -66,7 +65,7 @@ def check_token_expiry(now: datetime | None = None) -> str:
 
 def check(now: datetime | None = None) -> str:
     now = now or datetime.now().astimezone()
-    if now.weekday() not in POST_WEEKDAYS or (now.hour, now.minute) < CHECK_AFTER:
+    if (now.hour, now.minute) < CHECK_AFTER:
         return "not_due"
 
     date_key = now.strftime("%Y%m%d")

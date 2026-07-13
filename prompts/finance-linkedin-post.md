@@ -1,48 +1,48 @@
 # Codex Automation Prompt
 
-Generate one complete LinkedIn post ready to publish on behalf of a senior
-Finance & Accounts professional working in Indian fintech, then queue that
-exact post for both Telegram delivery and direct LinkedIn publishing by running
-`python src/enqueue_post.py` from the repository and passing the post text via
-stdin.
+Generate one complete LinkedIn post ready to publish on LinkedIn Page ID
+109667739 and also send the same text to Telegram.
 
-The local background worker handles both destinations independently. Do not
-call the Telegram or LinkedIn APIs directly from the automation run.
+Use current global AI news, not evergreen commentary. Check the latest credible
+sources available during the run, choose one timely global AI development from
+the last few days, and write a sharp, practical post for founders, finance
+leaders, operators, and technology decision-makers.
 
-## Content rules
+Queue the exact final post for both Telegram delivery and direct LinkedIn Page
+publishing by running `python src/enqueue_post.py` from the repository and
+passing the post text via stdin. The local background worker handles both
+destinations independently and publishes LinkedIn with the configured Page
+author `urn:li:organization:109667739`.
 
-- Use first-person voice as a Finance Manager in fintech or a startup.
-- Pick a unique, specific, practical topic from Finance, Accounts, FP&A, GST,
-  TDS, MIS, cash flow, AP/AR, close, budgeting, forecasting, variance analysis,
-  AI in finance, automation, leadership, fintech operations, audit, controls,
-  or investor reporting.
-- Give roughly 70% of posts a substantive AI or agentic-automation perspective
-  within a real finance workflow. Examples include AI in FP&A, forecasting,
-  variance investigation, close, reconciliation, GST/TDS exception review,
-  cash management, AP/AR, controls, MIS, and investor reporting.
-- Do not add generic AI hype. Explain the workflow, data and control boundary,
-  required human review, audit trail, failure risk, and measurable finance
-  outcome.
-- Keep roughly 30% of posts focused on non-AI finance topics for balance.
-- Never repeat a topic or angle used by an earlier run.
-- Structure: strong hook, real scenario or insight, practical takeaway,
-  hashtags.
+Do not call the Telegram or LinkedIn APIs directly from the automation run.
+The queued content must contain only the final post, with no explanation,
+preamble, title, source notes outside the post, or delivery note.
+
+## Content Rules
+
+- Start with a strong, specific hook tied to the news.
+- Explain what happened, why it matters globally, and the practical implication
+  for business, finance, operations, risk, product, or governance.
+- Avoid generic AI hype and motivational filler.
+- Include the control or risk angle where relevant: data rights, model
+  reliability, cost, regulation, enterprise adoption, safety, competition, or
+  workflow impact.
+- Keep the tone sharp, professional, slightly conversational, and highly
+  engaging.
+- Avoid generic openers like "In today's world" or "AI is changing everything".
 - Keep the entire post under 3,000 characters.
-- Use a sharp, professional, slightly conversational tone.
-- Avoid motivational filler and generic openers.
 - Use no more than one emoji.
 - End with exactly 6 to 8 relevant hashtags.
+- Never repeat the same news angle used in recent runs.
 - Output and queue only the publish-ready post.
 
-## Suggested schedule
+## Suggested Schedule
 
-- Monday at 12:00 PM in the user's timezone
-- Wednesday at 12:00 PM in the user's timezone
+- Every day at 12:00 PM in the user's timezone.
 
-In the Codex app, use the weekly rule below and let Codex interpret the wall
-clock time in the user's configured locale. Do not prepend a timezone-qualified
-`DTSTART`; that form may be saved without producing a scheduled run.
+In the Codex app, use the daily rule below and let Codex interpret the wall
+clock time in the user's configured locale.
 
 ```text
-FREQ=WEEKLY;BYDAY=MO,WE;BYHOUR=12;BYMINUTE=0;BYSECOND=0
+FREQ=DAILY;BYHOUR=12;BYMINUTE=0;BYSECOND=0
 ```

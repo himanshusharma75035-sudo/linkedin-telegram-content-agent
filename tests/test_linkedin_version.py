@@ -34,6 +34,19 @@ class LinkedInVersionTests(unittest.TestCase):
             ):
                 self.assertEqual(linkedin_post.linkedin_version(), "202605")
 
+    def test_organization_id_sets_author_urn(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            env_file = Path(temporary) / "linkedin.env"
+            env_file.write_text("LINKEDIN_ORGANIZATION_ID=12345\n", encoding="utf-8")
+            with (
+                patch.object(linkedin_post, "ENV_FILE", env_file),
+                patch.dict(os.environ, {}, clear=True),
+            ):
+                self.assertEqual(
+                    linkedin_post.linkedin_author_urn({"person_urn": "urn:li:person:abc"}),
+                    "urn:li:organization:12345",
+                )
+
 
 if __name__ == "__main__":
     unittest.main()

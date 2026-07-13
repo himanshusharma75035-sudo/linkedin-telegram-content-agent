@@ -14,8 +14,20 @@ import post_watchdog
 
 class WatchdogTests(unittest.TestCase):
     def test_not_due_before_check_time(self):
-        monday = datetime(2026, 7, 6, 12, 34)
-        self.assertEqual(post_watchdog.check(monday), "not_due")
+        sunday = datetime(2026, 7, 12, 12, 34)
+        self.assertEqual(post_watchdog.check(sunday), "not_due")
+
+    def test_daily_check_runs_after_check_time(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            with (
+                patch.object(post_watchdog, "SENT_DIR", root / "sent"),
+                patch.object(post_watchdog, "OUTBOX_DIR", root / "outbox"),
+                patch.object(post_watchdog, "STATE_FILE", root / "state.json"),
+                patch.object(post_watchdog, "send_message"),
+            ):
+                sunday = datetime(2026, 7, 12, 12, 35)
+                self.assertEqual(post_watchdog.check(sunday), "missing")
 
     def test_missing_post_sends_one_alert(self):
         with tempfile.TemporaryDirectory() as temporary:
