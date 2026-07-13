@@ -11,7 +11,7 @@ automation memory and today's local sent/outbox/failed artifacts.
 2. If a LinkedIn outbox or failed artifact exists, do not generate another
    post. Trigger one local delivery pass and let the worker continue retrying.
 3. If only Telegram has today's post, recover the matching text and queue only
-   the missing LinkedIn Page target.
+   the missing LinkedIn profile target.
 4. Only when no post was generated or queued anywhere today, generate a fresh
    global AI-news post and enqueue it for both destinations.
 
@@ -22,6 +22,9 @@ automation memory and today's local sent/outbox/failed artifacts.
 - Start with a strong, specific hook tied to the news.
 - Explain what happened, why it matters globally, and the practical implication
   for business, finance, operations, risk, product, or governance.
+- Mention the source of the information inside the post in a natural way, such
+  as `Source: Reuters` or `Source: Axios`, and include the source link when
+  practical while staying under the character limit.
 - Avoid generic AI hype and motivational filler.
 - Include the control or risk angle where relevant: data rights, model
   reliability, cost, regulation, enterprise adoption, safety, competition, or

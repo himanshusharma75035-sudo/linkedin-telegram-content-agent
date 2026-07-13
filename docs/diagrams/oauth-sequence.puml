@@ -16,7 +16,7 @@ participant "LinkedIn UserInfo" as Profile
 
 User -> App: Run authorization command
 App -> Callback: Start one-request HTTP server
-App -> OAuth: Open authorization URL\nopenid profile email w_member_social w_organization_social
+App -> OAuth: Open authorization URL\nopenid profile email w_member_social
 OAuth -> User: Show consent screen
 User -> OAuth: Approve
 OAuth -> Callback: Redirect with code + state

@@ -7,7 +7,7 @@
 [![Telegram Bot API](https://img.shields.io/badge/Telegram-Bot_API-26A5E4?logo=telegram&logoColor=white)](https://core.telegram.org/bots/api)
 
 A small, dependency-free delivery agent that takes one generated post and
-publishes it to both Telegram and a LinkedIn Page or personal profile.
+publishes it to both Telegram and a personal LinkedIn profile.
 
 It was built for a practical workflow: Codex generates a focused global AI-news
 post on a schedule, writes it into a durable local queue, and a silent
@@ -43,7 +43,7 @@ fails, the worker retries only LinkedIn. That avoids duplicate posts.
 
 ## Features
 
-- Publishes text posts to a LinkedIn Page or personal profile through the official API
+- Publishes text posts to a personal LinkedIn profile through the official API
 - Sends the same post to a Telegram bot chat
 - Durable queue with per-platform retry state
 - Duplicate-safe 12:20 recovery schedule and 12:35 delivery watchdog
@@ -87,7 +87,6 @@ fails, the worker retries only LinkedIn. That avoids duplicate posts.
 - A LinkedIn Developer app with:
   - **Share on LinkedIn**
   - **Sign In with LinkedIn using OpenID Connect**
-  - **Community Management API** or **Advertising API** access for Page posting
 - A scheduler or AI agent that can run `src/enqueue_post.py`
 
 ## 1. Clone and check
@@ -135,9 +134,12 @@ python src/telegram_send.py "Telegram setup works."
 ## 3. Create the LinkedIn app
 
 The LinkedIn Page associated with the developer app is not automatically the
-posting destination. Page publishing uses an organization author URN and
-requires the `w_organization_social` permission. Personal-profile publishing
-uses your authenticated member ID and the `w_member_social` permission.
+posting destination. Personal-profile publishing uses your authenticated member
+ID and the `w_member_social` permission.
+
+Page publishing is optional and restricted. It requires an organization author
+URN, LinkedIn approval for `w_organization_social`, and an eligible admin or
+content role on the Page.
 
 ### Create the required LinkedIn Page
 
@@ -163,13 +165,10 @@ On the app's **Products** tab, request these products:
 
 1. **Share on LinkedIn**
 2. **Sign In with LinkedIn using OpenID Connect**
-3. **Community Management API** or **Advertising API**, if you want Page posts
 
 The first grants `w_member_social`, which permits posting on behalf of the
 authenticated member. The second identifies the personal profile through
-OpenID Connect. Page posting requires `w_organization_social`, which LinkedIn
-grants through approved organization-capable API products and only for pages
-where the authenticated member has an eligible admin/content role.
+OpenID Connect.
 
 ### Add the redirect URL
 
@@ -192,7 +191,6 @@ LINKEDIN_CLIENT_ID=replace_with_client_id
 LINKEDIN_CLIENT_SECRET=replace_with_client_secret
 LINKEDIN_REDIRECT_URI=http://localhost:8080/linkedin/callback
 LINKEDIN_API_VERSION=202604
-LINKEDIN_ORGANIZATION_ID=109667739
 ```
 
 > [!CAUTION]

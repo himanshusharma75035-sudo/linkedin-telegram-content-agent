@@ -13,7 +13,6 @@ ENV_FILE = ROOT_DIR / "linkedin.env"
 TOKEN_FILE = ROOT_DIR / "linkedin_token.json"
 POSTS_URL = "https://api.linkedin.com/rest/posts"
 DEFAULT_LINKEDIN_VERSION = "202604"
-DEFAULT_ORGANIZATION_ID = "109667739"
 
 
 def linkedin_version() -> str:
@@ -27,7 +26,7 @@ def linkedin_author_urn(token: dict) -> str:
     if author_urn:
         return author_urn
 
-    organization_id = os.environ.get("LINKEDIN_ORGANIZATION_ID", DEFAULT_ORGANIZATION_ID).strip()
+    organization_id = os.environ.get("LINKEDIN_ORGANIZATION_ID", "").strip()
     if organization_id:
         return f"urn:li:organization:{organization_id}"
 

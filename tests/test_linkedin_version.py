@@ -47,6 +47,17 @@ class LinkedInVersionTests(unittest.TestCase):
                     "urn:li:organization:12345",
                 )
 
+    def test_member_author_is_default(self):
+        with (
+            tempfile.TemporaryDirectory() as temporary,
+            patch.object(linkedin_post, "ENV_FILE", Path(temporary) / "missing.env"),
+            patch.dict(os.environ, {}, clear=True),
+        ):
+            self.assertEqual(
+                linkedin_post.linkedin_author_urn({"person_urn": "urn:li:person:abc"}),
+                "urn:li:person:abc",
+            )
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -1,18 +1,18 @@
 # Codex Automation Prompt
 
-Generate one complete LinkedIn post ready to publish on LinkedIn Page ID
-109667739 and also send the same text to Telegram.
+Generate one complete LinkedIn post ready to publish on the user's personal
+LinkedIn profile and also send the same text to Telegram.
 
 Use current global AI news, not evergreen commentary. Check the latest credible
 sources available during the run, choose one timely global AI development from
 the last few days, and write a sharp, practical post for founders, finance
 leaders, operators, and technology decision-makers.
 
-Queue the exact final post for both Telegram delivery and direct LinkedIn Page
+Queue the exact final post for both Telegram delivery and direct LinkedIn profile
 publishing by running `python src/enqueue_post.py` from the repository and
 passing the post text via stdin. The local background worker handles both
-destinations independently and publishes LinkedIn with the configured Page
-author `urn:li:organization:109667739`.
+destinations independently and publishes LinkedIn with the authenticated member
+author from `linkedin_token.json`.
 
 Do not call the Telegram or LinkedIn APIs directly from the automation run.
 The queued content must contain only the final post, with no explanation,
@@ -23,6 +23,9 @@ preamble, title, source notes outside the post, or delivery note.
 - Start with a strong, specific hook tied to the news.
 - Explain what happened, why it matters globally, and the practical implication
   for business, finance, operations, risk, product, or governance.
+- Mention the source of the information inside the post in a natural way, such
+  as `Source: Reuters` or `Source: Axios`, and include the source link when
+  practical while staying under the character limit.
 - Avoid generic AI hype and motivational filler.
 - Include the control or risk angle where relevant: data rights, model
   reliability, cost, regulation, enterprise adoption, safety, competition, or
