@@ -24,10 +24,23 @@ token is expired, or the laptop is offline.
 This project separates generation from delivery:
 
 ```text
-MONDAY / WEDNESDAY, 12:00 PM
+DAILY, 12:00 PM
              |
              v
-   Codex generates one post
+   Codex generates AI-news post
+             |
+             v
+      Durable JSON outbox
+        /             \
+       v               v
+ Telegram delivery   LinkedIn delivery
+       |               |
+       +-------> sent archive
+
+MONDAY / WEDNESDAY, 3:00 PM
+             |
+             v
+   Codex generates finance post
              |
              v
       Durable JSON outbox
@@ -46,13 +59,14 @@ fails, the worker retries only LinkedIn. That avoids duplicate posts.
 - Publishes text posts to a personal LinkedIn profile through the official API
 - Sends the same post to a Telegram bot chat
 - Durable queue with per-platform retry state
-- Duplicate-safe 12:20 recovery schedule and 12:35 delivery watchdog
+- Duplicate-safe recovery schedules at 12:20 and 3:20
+- Slot-aware delivery watchdogs at 12:35 and 3:35
 - Telegram warning seven days before LinkedIn token expiry
 - LinkedIn OAuth 2.0 authorization through a localhost callback
 - Silent Windows startup using `pythonw.exe` and `wscript.exe`
 - Standard-library Python; no runtime packages to install
 - Secret-safe examples and git exclusions
-- Copy-ready Codex prompt for finance and fintech content
+- Copy-ready Codex prompts for AI news and finance/fintech content
 - AI-first topic policy: approximately 70% practical AI-in-finance angles
 
 ## Repository map
@@ -72,7 +86,10 @@ fails, the worker retries only LinkedIn. That avoids duplicate posts.
 |   |-- start_worker_silent.vbs
 |   `-- uninstall_startup.ps1
 |-- prompts/
-|   `-- finance-linkedin-post.md
+|   |-- finance-linkedin-post.md
+|   |-- recovery-check.md
+|   |-- finance-monday-wednesday-post.md
+|   `-- finance-recovery-check.md
 |-- docs/
 |   `-- diagrams/
 |-- tests/
@@ -263,9 +280,18 @@ on screen during the workday.
 
 ## 6. Connect Codex
 
-Use the prompt in
-[`prompts/finance-linkedin-post.md`](prompts/finance-linkedin-post.md) for a
-daily 12:00 PM global AI-news automation. Its final action is:
+Use the prompts in this repository for two independent Codex content tracks:
+
+- [`prompts/finance-linkedin-post.md`](prompts/finance-linkedin-post.md):
+  daily 12:00 PM global AI-news post
+- [`prompts/recovery-check.md`](prompts/recovery-check.md): daily 12:20 PM
+  AI-news recovery check
+- [`prompts/finance-monday-wednesday-post.md`](prompts/finance-monday-wednesday-post.md):
+  Monday/Wednesday 3:00 PM finance post
+- [`prompts/finance-recovery-check.md`](prompts/finance-recovery-check.md):
+  Monday/Wednesday 3:20 PM finance recovery check
+
+Each primary automation's final action is:
 
 ```powershell
 python src/enqueue_post.py
@@ -274,12 +300,10 @@ python src/enqueue_post.py
 Pass the generated post through standard input. The automation should not call
 Telegram or LinkedIn directly; the local worker owns delivery and retries.
 
-For production use, add a second Codex automation every day at 12:20 PM. It
-should first check today's sent/outbox artifacts and generate a post only when
-the primary run produced nothing. The background worker performs
-a 12:35 PM local watchdog check and sends one Telegram alert if no LinkedIn
-delivery is confirmed. A copy-ready recovery prompt is available in
-[`prompts/recovery-check.md`](prompts/recovery-check.md).
+Recovery automations should first check the relevant sent/outbox artifacts and
+generate a post only when the primary run produced nothing. The local watchdog
+checks the AI-news slot after 12:35 PM and the Monday/Wednesday finance slot
+after 3:35 PM, sending one Telegram alert per missed slot.
 
 ## Security model
 

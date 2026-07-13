@@ -27,7 +27,7 @@ class WatchdogTests(unittest.TestCase):
                 patch.object(post_watchdog, "send_message"),
             ):
                 sunday = datetime(2026, 7, 12, 12, 35)
-                self.assertEqual(post_watchdog.check(sunday), "missing")
+                self.assertEqual(post_watchdog.check(sunday), "alerted")
 
     def test_missing_post_sends_one_alert(self):
         with tempfile.TemporaryDirectory() as temporary:
@@ -39,7 +39,7 @@ class WatchdogTests(unittest.TestCase):
                 patch.object(post_watchdog, "send_message") as send_mock,
             ):
                 monday = datetime(2026, 7, 6, 12, 35)
-                self.assertEqual(post_watchdog.check(monday), "missing")
+                self.assertEqual(post_watchdog.check(monday), "alerted")
                 self.assertEqual(post_watchdog.check(monday), "already_alerted")
                 send_mock.assert_called_once()
 
@@ -48,7 +48,7 @@ class WatchdogTests(unittest.TestCase):
             root = Path(temporary)
             sent = root / "sent"
             sent.mkdir()
-            (sent / "20260706-example.json").write_text("{}\n", encoding="utf-8")
+            (sent / "20260706-120100-example.json").write_text("{}\n", encoding="utf-8")
             with (
                 patch.object(post_watchdog, "SENT_DIR", sent),
                 patch.object(post_watchdog, "OUTBOX_DIR", root / "outbox"),
@@ -56,6 +56,39 @@ class WatchdogTests(unittest.TestCase):
                 patch.object(post_watchdog, "send_message") as send_mock,
             ):
                 monday = datetime(2026, 7, 6, 12, 35)
+                self.assertEqual(post_watchdog.check(monday), "confirmed")
+                send_mock.assert_not_called()
+
+    def test_finance_slot_ignores_noon_ai_post(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            sent = root / "sent"
+            sent.mkdir()
+            (sent / "20260706-120100-ai.json").write_text("{}\n", encoding="utf-8")
+            with (
+                patch.object(post_watchdog, "SENT_DIR", sent),
+                patch.object(post_watchdog, "OUTBOX_DIR", root / "outbox"),
+                patch.object(post_watchdog, "STATE_FILE", root / "state.json"),
+                patch.object(post_watchdog, "send_message") as send_mock,
+            ):
+                monday = datetime(2026, 7, 6, 15, 35)
+                self.assertEqual(post_watchdog.check(monday), "alerted")
+                send_mock.assert_called_once()
+
+    def test_finance_slot_confirms_3pm_post(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            sent = root / "sent"
+            sent.mkdir()
+            (sent / "20260706-120100-ai.json").write_text("{}\n", encoding="utf-8")
+            (sent / "20260706-150100-finance.json").write_text("{}\n", encoding="utf-8")
+            with (
+                patch.object(post_watchdog, "SENT_DIR", sent),
+                patch.object(post_watchdog, "OUTBOX_DIR", root / "outbox"),
+                patch.object(post_watchdog, "STATE_FILE", root / "state.json"),
+                patch.object(post_watchdog, "send_message") as send_mock,
+            ):
+                monday = datetime(2026, 7, 6, 15, 35)
                 self.assertEqual(post_watchdog.check(monday), "confirmed")
                 send_mock.assert_not_called()
 

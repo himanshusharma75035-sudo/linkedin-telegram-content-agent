@@ -1,5 +1,7 @@
 import json
+import re
 from datetime import datetime, timezone
+from pathlib import Path
 
 from common import ROOT_DIR, atomic_write_json, read_json
 from telegram_send import send_message
@@ -9,7 +11,24 @@ SENT_DIR = ROOT_DIR / "sent"
 OUTBOX_DIR = ROOT_DIR / "outbox"
 STATE_FILE = ROOT_DIR / "watchdog_state.json"
 TOKEN_FILE = ROOT_DIR / "linkedin_token.json"
-CHECK_AFTER = (12, 35)
+WATCHDOG_SLOTS = [
+    {
+        "key": "ai_news",
+        "label": "daily AI-news LinkedIn post",
+        "weekdays": None,
+        "check_after": (12, 35),
+        "start": (12, 0),
+        "end": (14, 59, 59),
+    },
+    {
+        "key": "finance_mw",
+        "label": "Monday/Wednesday finance LinkedIn post",
+        "weekdays": {0, 2},
+        "check_after": (15, 35),
+        "start": (15, 0),
+        "end": None,
+    },
+]
 
 
 def load_state() -> dict:
@@ -63,42 +82,89 @@ def check_token_expiry(now: datetime | None = None) -> str:
     return level
 
 
-def check(now: datetime | None = None) -> str:
-    now = now or datetime.now().astimezone()
-    if (now.hour, now.minute) < CHECK_AFTER:
-        return "not_due"
+def artifact_in_slot(path: Path, date_key: str, slot: dict) -> bool:
+    match = re.search(rf"{date_key}-(\d{{6}})", path.name)
+    if not match:
+        return False
+    timestamp = int(match.group(1))
+    start_hour, start_minute = slot["start"]
+    start = start_hour * 10000 + start_minute * 100
+    if timestamp < start:
+        return False
+    if slot["end"]:
+        end_hour, end_minute, end_second = slot["end"]
+        end = end_hour * 10000 + end_minute * 100 + end_second
+        if timestamp > end:
+            return False
+    return True
 
+
+def slot_due(slot: dict, now: datetime) -> bool:
+    weekdays = slot["weekdays"]
+    if weekdays is not None and now.weekday() not in weekdays:
+        return False
+    return (now.hour, now.minute) >= slot["check_after"]
+
+
+def check_slot(slot: dict, now: datetime, state: dict) -> str:
     date_key = now.strftime("%Y%m%d")
-    state = load_state()
-    sent_files = list(SENT_DIR.glob(f"{date_key}-*.json"))
+    state_key = f"{slot['key']}:{date_key}"
+    sent_files = [
+        path
+        for path in SENT_DIR.glob(f"{date_key}-*.json")
+        if artifact_in_slot(path, date_key, slot)
+    ]
     if sent_files:
-        if date_key not in state["confirmed"]:
-            state["confirmed"][date_key] = now.isoformat()
-            if date_key in state["alerted"]:
+        if state_key not in state["confirmed"]:
+            state["confirmed"][state_key] = now.isoformat()
+            if state_key in state["alerted"]:
                 send_message(
-                    "LinkedIn automation recovery confirmed: today's post is now published."
+                    f"LinkedIn automation recovery confirmed: {slot['label']} is now published."
                 )
             atomic_write_json(STATE_FILE, state)
         return "confirmed"
 
-    if date_key in state["alerted"]:
+    if state_key in state["alerted"]:
         return "already_alerted"
 
-    pending_files = list(OUTBOX_DIR.glob(f"{date_key}-*.json"))
+    pending_files = [
+        path
+        for path in OUTBOX_DIR.glob(f"{date_key}-*.json")
+        if artifact_in_slot(path, date_key, slot)
+    ]
+    check_hour, check_minute = slot["check_after"]
+    check_time = f"{check_hour:02d}:{check_minute:02d}"
     if pending_files:
         message = (
-            "LinkedIn automation alert: today's post is queued but not confirmed "
-            "as published by 12:35 PM. The worker will keep retrying."
+            f"LinkedIn automation alert: {slot['label']} is queued but not "
+            f"confirmed as published by {check_time}. The worker will keep retrying."
         )
         result = "pending"
     else:
         message = (
-            "LinkedIn automation alert: no post artifact was found by 12:35 PM "
-            "after the primary and recovery schedules."
+            f"LinkedIn automation alert: no {slot['label']} artifact was found by "
+            f"{check_time} after the primary and recovery schedules."
         )
         result = "missing"
 
     send_message(message)
-    state["alerted"][date_key] = now.isoformat()
+    state["alerted"][state_key] = now.isoformat()
     atomic_write_json(STATE_FILE, state)
     return result
+
+
+def check(now: datetime | None = None) -> str:
+    now = now or datetime.now().astimezone()
+    state = load_state()
+    results = [
+        check_slot(slot, now, state)
+        for slot in WATCHDOG_SLOTS
+        if slot_due(slot, now)
+    ]
+    if not results:
+        return "not_due"
+    if any(result in {"missing", "pending"} for result in results):
+        return "alerted"
+    if any(result == "confirmed" for result in results):
+        return "confirmed"
+    return results[-1]
