@@ -14,8 +14,8 @@ TOKEN_FILE = ROOT_DIR / "linkedin_token.json"
 WATCHDOG_SLOTS = [
     {
         "key": "ai_news",
-        "label": "daily AI-news LinkedIn post",
-        "weekdays": None,
+        "label": "Tuesday/Thursday AI-news LinkedIn post",
+        "weekdays": {1, 3},
         "check_after": (12, 35),
         "start": (12, 0),
         "end": (14, 59, 59),

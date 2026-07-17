@@ -1,6 +1,6 @@
 # Duplicate-Safe Recovery Automation
 
-Run this automation every day at 12:20 PM.
+Run this automation every Tuesday and Thursday at 12:20 PM.
 
 Use the current date in the user's timezone. First inspect the primary
 automation memory and today's local sent/outbox/failed artifacts.
@@ -12,15 +12,20 @@ automation memory and today's local sent/outbox/failed artifacts.
    post. Trigger one local delivery pass and let the worker continue retrying.
 3. If only Telegram has today's post, recover the matching text and queue only
    the missing LinkedIn profile target.
-4. Only when no post was generated or queued anywhere today, generate a fresh
-   global AI-news post and enqueue it for both destinations.
+4. Only when no post was generated or queued anywhere today in the 12:00 slot,
+   generate a fresh global AI-news post and enqueue it for both destinations.
 
 ## Content Rules For A Missing Primary Run
 
 - Use current global AI news from credible recent sources.
-- Choose one timely global AI development from the last few days.
+- On Tuesday, include Monday's news window as eligible coverage. On Thursday,
+  include Wednesday's news window as eligible coverage.
+- Choose one timely global AI development from the current day or previous day.
 - Start with a strong, specific hook tied to the news.
-- Explain what happened, why it matters globally, and the practical implication
+- Keep it shorter and punchier than earlier long posts: target 900 to 1,400
+  characters including hashtags, and never exceed 1,800 characters unless the
+  story genuinely needs it.
+- Explain what happened, why it matters, and one practical implication
   for business, finance, operations, risk, product, or governance.
 - Mention the source of the information inside the post in a natural way, such
   as `Source: Reuters` or `Source: Axios`, and include the source link when
@@ -32,7 +37,6 @@ automation memory and today's local sent/outbox/failed artifacts.
 - Keep the tone sharp, professional, slightly conversational, and highly
   engaging.
 - Avoid generic openers.
-- Keep the post under 3,000 characters.
 - Use no more than one emoji.
 - End with exactly 6 to 8 relevant hashtags.
 - Read prior automation memory and never repeat a recent news angle.

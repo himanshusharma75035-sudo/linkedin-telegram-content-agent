@@ -9,8 +9,8 @@
 A small, dependency-free delivery agent that takes one generated post and
 publishes it to both Telegram and a personal LinkedIn profile.
 
-It was built for a practical workflow: Codex generates a focused global AI-news
-post on a schedule, writes it into a durable local queue, and a silent
+It was built for a practical workflow: Codex generates focused LinkedIn posts
+on a schedule, writes them into a durable local queue, and a silent
 background worker handles delivery independently for each platform.
 
 ![Architecture](docs/diagrams/architecture.svg)
@@ -24,7 +24,7 @@ token is expired, or the laptop is offline.
 This project separates generation from delivery:
 
 ```text
-DAILY, 12:00 PM
+TUESDAY / THURSDAY, 12:00 PM
              |
              v
    Codex generates AI-news post
@@ -283,8 +283,8 @@ on screen during the workday.
 Use the prompts in this repository for two independent Codex content tracks:
 
 - [`prompts/finance-linkedin-post.md`](prompts/finance-linkedin-post.md):
-  daily 12:00 PM global AI-news post
-- [`prompts/recovery-check.md`](prompts/recovery-check.md): daily 12:20 PM
+  Tuesday/Thursday 12:00 PM short global AI-news post
+- [`prompts/recovery-check.md`](prompts/recovery-check.md): Tuesday/Thursday 12:20 PM
   AI-news recovery check
 - [`prompts/finance-monday-wednesday-post.md`](prompts/finance-monday-wednesday-post.md):
   Monday/Wednesday 3:00 PM finance post
@@ -302,7 +302,7 @@ Telegram or LinkedIn directly; the local worker owns delivery and retries.
 
 Recovery automations should first check the relevant sent/outbox artifacts and
 generate a post only when the primary run produced nothing. The local watchdog
-checks the AI-news slot after 12:35 PM and the Monday/Wednesday finance slot
+checks the Tuesday/Thursday AI-news slot after 12:35 PM and the Monday/Wednesday finance slot
 after 3:35 PM, sending one Telegram alert per missed slot.
 
 ## Security model

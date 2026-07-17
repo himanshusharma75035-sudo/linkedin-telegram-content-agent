@@ -3,10 +3,13 @@
 Generate one complete LinkedIn post ready to publish on the user's personal
 LinkedIn profile and also send the same text to Telegram.
 
-Use current global AI news, not evergreen commentary. Check the latest credible
-sources available during the run, choose one timely global AI development from
-the last few days, and write a sharp, practical post for founders, finance
-leaders, operators, and technology decision-makers.
+This is the AI-news track and runs only on Tuesday and Thursday at 12:00 PM.
+
+Use current global AI news, not evergreen commentary. On Tuesday, include
+Monday's news window as eligible coverage. On Thursday, include Wednesday's news
+window as eligible coverage. Choose one timely global AI development from the
+current day or previous day that is credible, practical, and likely to matter to
+founders, finance leaders, operators, and technology decision-makers.
 
 Queue the exact final post for both Telegram delivery and direct LinkedIn profile
 publishing by running `python src/enqueue_post.py` from the repository and
@@ -21,7 +24,10 @@ preamble, title, source notes outside the post, or delivery note.
 ## Content Rules
 
 - Start with a strong, specific hook tied to the news.
-- Explain what happened, why it matters globally, and the practical implication
+- Keep it shorter and punchier than earlier long posts: target 900 to 1,400
+  characters including hashtags, and never exceed 1,800 characters unless the
+  story genuinely needs it.
+- Explain what happened, why it matters, and one practical implication
   for business, finance, operations, risk, product, or governance.
 - Mention the source of the information inside the post in a natural way, such
   as `Source: Reuters` or `Source: Axios`, and include the source link when
@@ -33,7 +39,6 @@ preamble, title, source notes outside the post, or delivery note.
 - Keep the tone sharp, professional, slightly conversational, and highly
   engaging.
 - Avoid generic openers like "In today's world" or "AI is changing everything".
-- Keep the entire post under 3,000 characters.
 - Use no more than one emoji.
 - End with exactly 6 to 8 relevant hashtags.
 - Never repeat the same news angle used in recent runs.
@@ -41,11 +46,11 @@ preamble, title, source notes outside the post, or delivery note.
 
 ## Suggested Schedule
 
-- Every day at 12:00 PM in the user's timezone.
+- Tuesday and Thursday at 12:00 PM in the user's timezone.
 
-In the Codex app, use the daily rule below and let Codex interpret the wall
+In the Codex app, use the weekly rule below and let Codex interpret the wall
 clock time in the user's configured locale.
 
 ```text
-FREQ=DAILY;BYHOUR=12;BYMINUTE=0;BYSECOND=0
+FREQ=WEEKLY;BYDAY=TU,TH;BYHOUR=12;BYMINUTE=0;BYSECOND=0
 ```

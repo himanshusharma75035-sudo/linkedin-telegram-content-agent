@@ -14,10 +14,14 @@ import post_watchdog
 
 class WatchdogTests(unittest.TestCase):
     def test_not_due_before_check_time(self):
-        sunday = datetime(2026, 7, 12, 12, 34)
-        self.assertEqual(post_watchdog.check(sunday), "not_due")
+        tuesday = datetime(2026, 7, 14, 12, 34)
+        self.assertEqual(post_watchdog.check(tuesday), "not_due")
 
-    def test_daily_check_runs_after_check_time(self):
+    def test_ai_check_not_due_on_monday(self):
+        monday = datetime(2026, 7, 6, 12, 35)
+        self.assertEqual(post_watchdog.check(monday), "not_due")
+
+    def test_ai_check_runs_on_tuesday_after_check_time(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             with (
@@ -26,8 +30,8 @@ class WatchdogTests(unittest.TestCase):
                 patch.object(post_watchdog, "STATE_FILE", root / "state.json"),
                 patch.object(post_watchdog, "send_message"),
             ):
-                sunday = datetime(2026, 7, 12, 12, 35)
-                self.assertEqual(post_watchdog.check(sunday), "alerted")
+                tuesday = datetime(2026, 7, 14, 12, 35)
+                self.assertEqual(post_watchdog.check(tuesday), "alerted")
 
     def test_missing_post_sends_one_alert(self):
         with tempfile.TemporaryDirectory() as temporary:
@@ -38,9 +42,9 @@ class WatchdogTests(unittest.TestCase):
                 patch.object(post_watchdog, "STATE_FILE", root / "state.json"),
                 patch.object(post_watchdog, "send_message") as send_mock,
             ):
-                monday = datetime(2026, 7, 6, 12, 35)
-                self.assertEqual(post_watchdog.check(monday), "alerted")
-                self.assertEqual(post_watchdog.check(monday), "already_alerted")
+                tuesday = datetime(2026, 7, 14, 12, 35)
+                self.assertEqual(post_watchdog.check(tuesday), "alerted")
+                self.assertEqual(post_watchdog.check(tuesday), "already_alerted")
                 send_mock.assert_called_once()
 
     def test_confirmed_post_does_not_alert(self):
@@ -48,15 +52,15 @@ class WatchdogTests(unittest.TestCase):
             root = Path(temporary)
             sent = root / "sent"
             sent.mkdir()
-            (sent / "20260706-120100-example.json").write_text("{}\n", encoding="utf-8")
+            (sent / "20260714-120100-example.json").write_text("{}\n", encoding="utf-8")
             with (
                 patch.object(post_watchdog, "SENT_DIR", sent),
                 patch.object(post_watchdog, "OUTBOX_DIR", root / "outbox"),
                 patch.object(post_watchdog, "STATE_FILE", root / "state.json"),
                 patch.object(post_watchdog, "send_message") as send_mock,
             ):
-                monday = datetime(2026, 7, 6, 12, 35)
-                self.assertEqual(post_watchdog.check(monday), "confirmed")
+                tuesday = datetime(2026, 7, 14, 12, 35)
+                self.assertEqual(post_watchdog.check(tuesday), "confirmed")
                 send_mock.assert_not_called()
 
     def test_finance_slot_ignores_noon_ai_post(self):
