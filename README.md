@@ -57,6 +57,7 @@ fails, the worker retries only LinkedIn. That avoids duplicate posts.
 ## Features
 
 - Publishes text posts to a personal LinkedIn profile through the official API
+- Optionally attaches AI-generated images to Monday/Wednesday finance posts
 - Sends the same post to a Telegram bot chat
 - Durable queue with per-platform retry state
 - Duplicate-safe recovery schedules at 12:20 and 3:20
@@ -77,6 +78,7 @@ fails, the worker retries only LinkedIn. That avoids duplicate posts.
 |   |-- common.py
 |   |-- delivery_worker.py
 |   |-- enqueue_post.py
+|   |-- generate_finance_image.py
 |   |-- linkedin_oauth.py
 |   |-- linkedin_post.py
 |   `-- telegram_send.py
@@ -94,6 +96,7 @@ fails, the worker retries only LinkedIn. That avoids duplicate posts.
 |   `-- diagrams/
 |-- tests/
 |-- linkedin.env.example
+|-- openai.env.example
 `-- telegram.env.example
 ```
 
@@ -105,6 +108,7 @@ fails, the worker retries only LinkedIn. That avoids duplicate posts.
   - **Share on LinkedIn**
   - **Sign In with LinkedIn using OpenID Connect**
 - A scheduler or AI agent that can run `src/enqueue_post.py`
+- Optional: an OpenAI API key for finance-post image generation
 
 ## 1. Clone and check
 
@@ -241,6 +245,26 @@ Queue text for both platforms:
 "A complete LinkedIn post..." | python src/enqueue_post.py
 ```
 
+For Monday/Wednesday 3:00 PM finance posts only, queue with an AI-generated
+LinkedIn image:
+
+```powershell
+"A complete finance LinkedIn post..." | python src/enqueue_post.py --finance-image
+```
+
+This requires `openai.env`. If the OpenAI key is missing, the command still
+queues the post as text-only so delivery is not blocked.
+
+```powershell
+Copy-Item openai.env.example openai.env
+```
+
+```env
+OPENAI_API_KEY=replace_with_openai_api_key
+OPENAI_IMAGE_MODEL=gpt-image-1-mini
+OPENAI_IMAGE_SIZE=1536x1024
+```
+
 Process the queue once:
 
 ```powershell
@@ -299,6 +323,14 @@ python src/enqueue_post.py
 
 Pass the generated post through standard input. The automation should not call
 Telegram or LinkedIn directly; the local worker owns delivery and retries.
+
+For the Monday/Wednesday finance automation only, use:
+
+```powershell
+python src/enqueue_post.py --finance-image
+```
+
+Keep the Tuesday/Thursday AI-news automation on the plain text command.
 
 Recovery automations should first check the relevant sent/outbox artifacts and
 generate a post only when the primary run produced nothing. The local watchdog

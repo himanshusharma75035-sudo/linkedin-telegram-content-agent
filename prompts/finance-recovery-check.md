@@ -20,9 +20,14 @@ automation memory and today's local sent/outbox/failed artifacts.
    3:00 PM, do not generate another post. Trigger one local delivery pass and
    let the worker continue retrying.
 4. If only Telegram has today's finance post, recover the matching text and
-   queue only the missing LinkedIn profile target.
+   queue only the missing LinkedIn profile target. Use `--finance-image` only
+   if the recovered LinkedIn outbox item has no existing image metadata.
 5. Only when no finance post was generated or queued anywhere after 3:00 PM,
-   generate a fresh post and enqueue it for both destinations.
+   generate a fresh post and enqueue it for both destinations with
+   `python src/enqueue_post.py --finance-image`.
+
+Images are allowed only for Monday/Wednesday 3:00 PM finance posts. Do not add
+images to the Tuesday/Thursday AI-news posts.
 
 ## Content Rules For A Missing Primary Run
 

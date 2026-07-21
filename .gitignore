@@ -1,9 +1,11 @@
 telegram.env
 linkedin.env
+openai.env
 linkedin_token.json
 outbox/
 sent/
 failed/
+generated_images/
 watchdog_state.json
 *.log
 __pycache__/

@@ -7,14 +7,18 @@ This is the finance/fintech thought-leadership track, separate from the daily
 12:00 PM global AI-news track.
 
 Queue the exact final post for both Telegram delivery and direct LinkedIn
-profile publishing by running `python src/enqueue_post.py` from the repository
-and passing the post text via stdin. The local background worker handles both
-destinations independently and publishes LinkedIn with the authenticated member
-author from `linkedin_token.json`.
+profile publishing by running `python src/enqueue_post.py --finance-image`
+from the repository and passing the post text via stdin. The local background
+worker sends text to Telegram and attaches the generated image only to the
+LinkedIn finance post. If `OPENAI_API_KEY` is not configured, the post must
+still queue and publish as text-only instead of failing.
 
 Do not call the Telegram or LinkedIn APIs directly from the automation run.
 The queued content must contain only the final post, with no explanation,
 preamble, title, or delivery note.
+
+Do not attach images to the Tuesday/Thursday AI-news track. Images are for this
+Monday/Wednesday 3:00 PM finance track only.
 
 ## Content Rules
 

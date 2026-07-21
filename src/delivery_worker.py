@@ -5,7 +5,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from common import ROOT_DIR, atomic_write_json, read_json
-from linkedin_post import linkedin_post_url, publish_text_post
+from linkedin_post import linkedin_post_url, publish_post
 from post_watchdog import check as check_post_watchdog
 from post_watchdog import check_token_expiry
 from telegram_send import send_message
@@ -48,7 +48,14 @@ def process_message(path: Path) -> bool:
     linkedin = message["targets"].get("linkedin")
     if linkedin and not linkedin["delivered"]:
         try:
-            post_id = publish_text_post(text)
+            result = publish_post(
+                text,
+                image_path=message.get("image_path"),
+                alt_text=message.get("image_alt_text"),
+            )
+            post_id = result.get("post_id", "")
+            if result.get("image_urn"):
+                message["image_urn"] = result["image_urn"]
             mark_success(message, "linkedin", linkedin_post_url(post_id) or post_id)
         except Exception as exc:
             mark_failure(message, "linkedin", exc)

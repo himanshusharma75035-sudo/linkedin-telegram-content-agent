@@ -42,7 +42,7 @@ class QueueTests(unittest.TestCase):
                 patch.object(delivery_worker, "send_message", return_value={"result": {"message_id": 7}}),
                 patch.object(
                     delivery_worker,
-                    "publish_text_post",
+                    "publish_post",
                     side_effect=RuntimeError("temporary LinkedIn failure"),
                 ),
             ):
@@ -59,8 +59,8 @@ class QueueTests(unittest.TestCase):
                 patch.object(delivery_worker, "send_message") as telegram_mock,
                 patch.object(
                     delivery_worker,
-                    "publish_text_post",
-                    return_value="urn:li:share:123",
+                    "publish_post",
+                    return_value={"post_id": "urn:li:share:123", "image_urn": None},
                 ),
             ):
                 complete = delivery_worker.process_message(path)
@@ -72,6 +72,21 @@ class QueueTests(unittest.TestCase):
                 archived["targets"]["linkedin"]["reference"],
                 "https://www.linkedin.com/feed/update/urn:li:share:123/",
             )
+
+    def test_enqueue_can_store_linkedin_image_metadata(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            outbox = Path(temporary)
+            with patch.object(enqueue_post, "OUTBOX_DIR", outbox):
+                message_id = enqueue_post.enqueue(
+                    "Finance post",
+                    ["telegram", "linkedin"],
+                    image_path="C:\\images\\finance.png",
+                    image_alt_text="Finance visual",
+                )
+
+            data = json.loads((outbox / f"{message_id}.json").read_text(encoding="utf-8"))
+            self.assertEqual(data["image_path"], "C:\\images\\finance.png")
+            self.assertEqual(data["image_alt_text"], "Finance visual")
 
 
 if __name__ == "__main__":
