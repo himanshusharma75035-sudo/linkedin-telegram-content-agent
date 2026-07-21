@@ -40,7 +40,8 @@ preamble, title, source notes outside the post, or delivery note.
   engaging.
 - Avoid generic openers like "In today's world" or "AI is changing everything".
 - Use no more than one emoji.
-- End with exactly 6 to 8 relevant hashtags.
+- End with exactly 6 to 8 relevant hashtags, formatted vertically with each
+  hashtag on its own separate line.
 - Never repeat the same news angle used in recent runs.
 - Output and queue only the publish-ready post.
 

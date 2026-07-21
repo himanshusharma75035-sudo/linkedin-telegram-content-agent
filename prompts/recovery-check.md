@@ -38,6 +38,7 @@ automation memory and today's local sent/outbox/failed artifacts.
   engaging.
 - Avoid generic openers.
 - Use no more than one emoji.
-- End with exactly 6 to 8 relevant hashtags.
+- End with exactly 6 to 8 relevant hashtags, formatted vertically with each
+  hashtag on its own separate line.
 - Read prior automation memory and never repeat a recent news angle.
 - Queue only the final publish-ready post.

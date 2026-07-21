@@ -42,7 +42,11 @@ automation memory and today's local sent/outbox/failed artifacts.
 - Include a concise source line inside the post: use `Source: Practical finance
   operations experience` for experience-based posts, or cite the relevant
   official/news source when the post uses current external information.
-- Keep the post under 3,000 characters.
+- Keep it shorter and punchier than earlier long finance posts: target 900 to
+  1,400 characters including hashtags, and never exceed 1,800 characters unless
+  the topic genuinely needs it.
 - Use a sharp, professional, slightly conversational tone.
 - Avoid generic openers, motivational filler, and more than one emoji.
+- End with exactly 6 to 8 relevant hashtags, formatted vertically with each
+  hashtag on its own separate line.
 - Queue only the final publish-ready post.
