@@ -46,6 +46,9 @@ Monday/Wednesday 3:00 PM finance track only.
 - Use a sharp, professional, slightly conversational tone.
 - Avoid motivational filler and generic openers.
 - Use no more than one emoji.
+- Use ASCII punctuation only: straight apostrophes, straight double quotes,
+  and hyphens. Do not use curly quotes, em dashes, en dashes, or smart
+  punctuation.
 - End with exactly 6 to 8 relevant hashtags, formatted vertically with each
   hashtag on its own separate line.
 - Output and queue only the publish-ready post.

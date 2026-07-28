@@ -38,6 +38,9 @@ automation memory and today's local sent/outbox/failed artifacts.
   engaging.
 - Avoid generic openers.
 - Use no more than one emoji.
+- Use ASCII punctuation only: straight apostrophes, straight double quotes,
+  and hyphens. Do not use curly quotes, em dashes, en dashes, or smart
+  punctuation.
 - End with exactly 6 to 8 relevant hashtags, formatted vertically with each
   hashtag on its own separate line.
 - Read prior automation memory and never repeat a recent news angle.

@@ -52,6 +52,9 @@ images to the Tuesday/Thursday AI-news posts.
   the topic genuinely needs it.
 - Use a sharp, professional, slightly conversational tone.
 - Avoid generic openers, motivational filler, and more than one emoji.
+- Use ASCII punctuation only: straight apostrophes, straight double quotes,
+  and hyphens. Do not use curly quotes, em dashes, en dashes, or smart
+  punctuation.
 - End with exactly 6 to 8 relevant hashtags, formatted vertically with each
   hashtag on its own separate line.
 - Queue only the final publish-ready post.

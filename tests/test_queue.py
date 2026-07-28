@@ -88,6 +88,14 @@ class QueueTests(unittest.TestCase):
             self.assertEqual(data["image_path"], "C:\\images\\finance.png")
             self.assertEqual(data["image_alt_text"], "Finance visual")
 
+    def test_clean_post_text_normalizes_smart_punctuation_damage(self):
+        raw = 'Audit???not checklist. Hugging Face???s test proposed an ???AI Kill Switch Act???.'
+        cleaned = enqueue_post.clean_post_text(raw)
+        self.assertEqual(
+            cleaned,
+            'Audit - not checklist. Hugging Face\'s test proposed an "AI Kill Switch Act".',
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

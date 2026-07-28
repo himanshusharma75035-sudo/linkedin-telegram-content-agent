@@ -1,5 +1,6 @@
 import argparse
 import os
+import re
 import sys
 import uuid
 from datetime import datetime, timezone
@@ -10,6 +11,16 @@ from common import ROOT_DIR, atomic_write_json
 
 OUTBOX_DIR = ROOT_DIR / "outbox"
 DEFAULT_IMAGE_ALT_TEXT = "AI-generated finance workflow visual for this LinkedIn post."
+TYPOGRAPHY_REPLACEMENTS = {
+    "\u2018": "'",
+    "\u2019": "'",
+    "\u201c": '"',
+    "\u201d": '"',
+    "\u2013": "-",
+    "\u2014": "-",
+    "\u2026": "...",
+    "\u00a0": " ",
+}
 
 
 def maybe_generate_finance_image(text: str, message_id: str) -> str | None:
@@ -25,6 +36,16 @@ def maybe_generate_finance_image(text: str, message_id: str) -> str | None:
 
 def build_message_id() -> str:
     return f"{datetime.now().strftime('%Y%m%d-%H%M%S')}-{uuid.uuid4().hex[:8]}"
+
+
+def clean_post_text(text: str) -> str:
+    for old, new in TYPOGRAPHY_REPLACEMENTS.items():
+        text = text.replace(old, new)
+    text = re.sub(r"([A-Za-z0-9])\?{3}s\b", r"\1's", text)
+    text = re.sub(r"([A-Za-z0-9])\?{3}([A-Za-z0-9])", r"\1 - \2", text)
+    text = re.sub(r"\?{3}([^?\n]{1,80})\?{3}", r'"\1"', text)
+    text = text.replace("???", " - ")
+    return text
 
 
 def enqueue(
@@ -76,7 +97,7 @@ def main() -> int:
     )
     args = parser.parse_args()
 
-    text = " ".join(args.message).strip() or sys.stdin.read().strip()
+    text = clean_post_text(" ".join(args.message).strip() or sys.stdin.read().strip())
     if not text:
         print("Post is empty.", file=sys.stderr)
         return 2
