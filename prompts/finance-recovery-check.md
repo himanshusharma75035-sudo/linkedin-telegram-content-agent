@@ -47,9 +47,9 @@ images to the Tuesday/Thursday AI-news posts.
 - Include a concise source line inside the post: use `Source: Practical finance
   operations experience` for experience-based posts, or cite the relevant
   official/news source when the post uses current external information.
-- Keep it shorter and punchier than earlier long finance posts: target 900 to
-  1,400 characters including hashtags, and never exceed 1,800 characters unless
-  the topic genuinely needs it.
+- Keep it concise: target 650 to 950 characters including hashtags, and never
+  exceed 1,100 characters. Use short paragraphs and remove secondary examples
+  before exceeding the cap.
 - Use a sharp, professional, slightly conversational tone.
 - Avoid generic openers, motivational filler, and more than one emoji.
 - Use ASCII punctuation only: straight apostrophes, straight double quotes,
